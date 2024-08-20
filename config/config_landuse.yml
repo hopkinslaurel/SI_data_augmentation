@@ -1,0 +1,61 @@
+---
+model:
+  arch: 'resnet18'
+  mode: 'classification'
+  task: 'landuse'
+  name: 'landuse_resnet_pre_wD0.01_1e-6_3kepochs_batch50_slidemix'  # name of training run/model'
+  model_fn: '' # path to .ckpt to resume training a model or for evaluating a trained model
+
+training:
+  lr: 1e-6
+  weight_decay: 0.01
+  beta1: 0.9  # default is 0.9
+  lr_gamma:  # gamma for learning rate scheduler (decay rate factor), if empty: no scheduler
+  epochs_start: 0
+  epochs_end: 3000
+  batch_size: 50
+  shuffle: true
+  augment: true
+  augment_type: [ 'identity', 'flip', 'rotate' ]
+    #['auto_contrast', 'equalize', 'color', 'solarize', 'posterize', 'contrast', 'brightness',
+    #'sharpness', 'translateX', 'translateY', 'shearX', 'shearY', 'flip', 'rotate', 'erase',
+  #'saturate', 'noise']
+  # ['auto_imagenet', 'auto_cifar', 'auto_svhn', 'random', 'trivial'] - automated augmentation methods, set augment_random to false
+  augment_random: true  # if true, randomly select one operation at random, o.w. perform every operation
+  mixing_method: 'Sat-SlideMix'  # ['CutMix', 'Sat-CutMix', 'Sat-SlideMix', None]
+  cutmix_num_pairs: 3
+  cutmix_alpha: 0.3
+  num_workers: 1
+  train: true
+  val: true  # evaluate validation set
+  test: false  # evaluate test set
+  save_models: false  # save model params every 5 epochs
+
+data:
+  img_type: 'rgb'  # ['rgb', 'landsat']
+  img_size: 240
+  img_ext: 'npy'  # extension of image ['npy', 'png']
+  bands: 3  # 1: grayscale, 3: rgb, -1: grayscale for ResNet
+  num_classes: 21
+  labels: '/merced_labels.npy'
+
+eval:
+  mse: false
+  mae: false
+  r2: false
+  acc: true
+  pr: true
+  predictions: false  # get model predictions, post training
+  post_training: false  # evalualate model post-training, must define model_fn
+  model_weights: ''  # name of model for loading weights
+  post_training_split: 'test'  # split to evaluate post training
+
+# preprocessing code, usually only needed to format images
+preprocessing:
+  tif2npy: false  # set to true to convert tif images to npy
+  csv2npy: false  # set to true to convert csv label files to npy
+  calc_channel_means: false
+  calc_channel_means_stdDevs: false
+  split: 'train'  # split to calc means ['all' 'train', 'test', 'val']
+
+
