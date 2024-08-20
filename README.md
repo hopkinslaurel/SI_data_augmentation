@@ -1,2 +1,1 @@
-# SI_data_augmentation
-Data Augmentation Approaches for Satellite Imagery 
+# Code associated with Data Augmentation Approaches for Satellite Imagery 
